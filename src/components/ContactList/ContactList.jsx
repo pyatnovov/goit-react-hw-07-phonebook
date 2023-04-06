@@ -1,29 +1,29 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteItem, getItem, getFilter } from '../../redux/slice';
+import { getContacts, getFilter } from 'redux/selectors';
+import { deleteContact } from 'redux/operations';
 
 export const ContactList = () => {
   const dispatch = useDispatch();
-  const items = useSelector(getItem);
-  const filter = useSelector(getFilter);
-
-  function ItemsFilter() {
-    if (filter === '') {
-      return false;
+  const contacts = useSelector(getContacts);
+  const filterValue = useSelector(getFilter).toLowerCase();
+  const handleDelete = e => {
+    dispatch(deleteContact(e.target.id));
+  };
+  const getVisibleContacts = () => {
+    if (!filterValue || filterValue === '') {
+      return contacts;
     }
-    return items.filter(x => x.name.toLowerCase().includes(filter));
-  }
-  const filtration = ItemsFilter();
-  const list = filtration ? filtration : items;
+    return contacts.filter(contact => {
+      return contact.name.toLowerCase().includes(filterValue);
+    });
+  };
+  const visibleContact = getVisibleContacts();
   return (
     <ul>
-      {list.map(({ id, name, number }) => (
-        <li key={id}>
-          {name}: {number}
-          <button
-            type="button"
-            name={id}
-            onClick={e => dispatch(deleteItem(e.target.name))}
-          >
+      {visibleContact.map(contact => (
+        <li key={contact.id}>
+          {contact.name}: {contact.number}
+          <button type="button" name={contact.id} onClick={handleDelete}>
             Delete
           </button>
         </li>

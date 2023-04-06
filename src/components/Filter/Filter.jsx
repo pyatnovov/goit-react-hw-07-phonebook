@@ -1,9 +1,11 @@
-import { useSelector, useDispatch } from 'react-redux';
-import { filterValue, getFilter } from 'redux/slice';
+import { useDispatch } from 'react-redux';
+import { setFilterContacts } from 'redux/filterslice';
 
 export const Filter = () => {
   const dispatch = useDispatch();
-  const filter = useSelector(getFilter);
+  const handleChange = e => {
+    dispatch(setFilterContacts(e.target.value));
+  };
 
   return (
     <div>
@@ -12,8 +14,7 @@ export const Filter = () => {
         type="text"
         name="filter"
         placeholder="Enter filter"
-        value={filter}
-        onChange={e => dispatch(filterValue(e.target.value.toLowerCase()))}
+        onChange={handleChange}
       />
     </div>
   );

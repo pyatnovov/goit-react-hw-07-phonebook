@@ -1,37 +1,20 @@
-import { useState } from 'react';
-import { nanoid } from 'nanoid';
+import { addContact } from 'redux/operations';
 import { useSelector, useDispatch } from 'react-redux';
-import { addItem, filterValue, getItem } from '../../redux/slice';
+import { getContacts } from 'redux/selectors';
 
-const STATE = {
-  name: '',
-  number: '',
-};
 export const ContactForm = () => {
-  const [{ name, number }, setState] = useState(STATE);
   const dispatch = useDispatch();
-  const items = useSelector(getItem);
-
-  const onChange = event => {
-    const { name, value } = event.target;
-    setState(prevState => ({ ...prevState, [name]: value }));
-  };
+  const contacts = useSelector(getContacts);
 
   const formSubmit = event => {
     event.preventDefault();
-    const newContact = {
-      id: nanoid(),
-      name,
-      number,
-    };
-    if (items.some(x => x.name === newContact.name)) {
-      alert(`${newContact.name} вже у списку`);
-      return;
-    }
-    dispatch(addItem(newContact));
-    dispatch(filterValue(''));
 
-    setState({ ...STATE });
+    const name = event.target.name.value;
+    const phone = event.target.number.value;
+    if (contacts.find(item => item.name.toLowerCase() === name.toLowerCase())) {
+      return alert(`${name} вже в книзі контакті`);
+    }
+    dispatch(addContact({ name, phone }));
   };
 
   return (
@@ -44,8 +27,6 @@ export const ContactForm = () => {
         title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
         required
         placeholder="Enter name"
-        value={name}
-        onChange={onChange}
       />
       <label>Number </label>
       <input
@@ -55,8 +36,6 @@ export const ContactForm = () => {
         title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
         required
         placeholder="Enter phone number"
-        value={number}
-        onChange={onChange}
       />
       <button type="submit">Add contact</button>
     </form>
