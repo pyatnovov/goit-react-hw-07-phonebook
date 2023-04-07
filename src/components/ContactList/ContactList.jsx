@@ -7,7 +7,7 @@ export const ContactList = () => {
   const contacts = useSelector(getContacts);
   const filterValue = useSelector(getFilter).toLowerCase();
   const handleDelete = e => {
-    dispatch(deleteContact(e.target.id));
+    dispatch(deleteContact(e.target.name));
   };
   const getVisibleContacts = () => {
     if (!filterValue || filterValue === '') {
